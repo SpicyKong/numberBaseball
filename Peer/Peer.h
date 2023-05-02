@@ -2,19 +2,25 @@
 #include "../managers/NetworkManager.h"
 #include "../managers/packet.h"
 #include "../managers/ProtocolManager.h"
-#define MAX_BUFFER 1024
+#include <deque>
+
 class Peer {
 private:
-    char buf[MAX_BUFFER];
-    short bufIdx;
+    std::deque<char> bufLeft, bufRight;
     bool state;
     GameManager* GM;
     NetworkManager* NM;
     ProtocolManager* PM;
     
-    void print(char* msg);
-    void input();
-    bool processBuffer();
+
+    void consolePrint(char* msg);
+    void consolePrintBuf();
+    void consoleHideBuf();
+    void consoleInput();
+    void consoleSyncCursor();
+    void getWord(char* buf);
+    void processBuffer();
+    void clearBuf();
 public:
     Peer();
     ~Peer();
