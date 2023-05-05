@@ -4,7 +4,7 @@
 #include "IComponent.h"
 #include "IMediator.h"
 #include <deque>
-
+#include <string>
 
 class Cli : public IComponent {
 private:
@@ -23,6 +23,6 @@ public:
     void setMediator(IMediator* mediator);
     void changed();
     void run();
-    void consolePrint(char* msg);
+    void consolePrint(std::string msg);
 };
 #endif

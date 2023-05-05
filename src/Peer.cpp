@@ -2,10 +2,10 @@
 #include <cstring>
 #include <thread>
 #include <stdlib.h>
-
+#include <string>
 Peer::Peer()
 {
-    //gm = new GameManager();
+    gm = new GameManager();
     //nm = new NetworkManager();
     cli = new Cli();
     cli->setMediator(this);
@@ -19,16 +19,30 @@ Peer::~Peer()
 
 }
 
-void Peer::notify(char* event)
+void Peer::notify(std::string event)
 {
-    if (strcmp(event, "KEY_PRESS") == 0) 
+    if (event == "KEY_PRESS") 
     {
-        cli->consolePrint("key is pressed");
+        cli->consolePrint(std::string("key is pressed"));
     }
-    if (strcmp(event, "STOP") == 0) 
+    else if (event == "STOP") 
     {
-        cli->consolePrint("stopped");
+        cli->consolePrint(std::string("stopped"));
         state = 0;
+    }
+    else if (event == "TEST")
+    {
+        gm->createGame(1);
+        gm->setAnswer(2, 123);
+        gm->setAnswer(1, 124);
+        //char* buf = "test";
+        gm->submitGuess(1, 999);
+        //cli->consolePrint(buf);
+        gm->submitGuess(2, 999);
+        //cli->consolePrint(buf);
+        gm->submitGuess(1, 124);
+        //cli->consolePrint(buf);
+        cli->consolePrint(std::string("Done"));
     }
 }
 
@@ -37,7 +51,7 @@ void Peer::run()
     std::thread consoleInterface(Cli::run, cli);
     while (state) {
         _sleep(1000);
-        cli->consolePrint("something\n");
+        cli->consolePrint(std::string("something\n"));
     }
     consoleInterface.join();
 }
@@ -45,5 +59,6 @@ void Peer::run()
 
 int main() {
     Peer test = Peer();
+    
     test.run();
 }

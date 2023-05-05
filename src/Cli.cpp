@@ -54,6 +54,7 @@ void Cli::consoleInput(){
             std::cout << bufLeft.back();
             break;
         case 80: // down key
+            mediator->notify("TEST");
             break;
         case 83: //delete
             if (bufRight.size() == 0)
@@ -99,7 +100,7 @@ void Cli::setMediator(IMediator* mediator){
 void Cli::changed(){
     if (mediator == nullptr)
         return;
-    char* eventName = "KEY_PRESS";
+    std::string eventName = "KEY_PRESS";
     mediator->notify(eventName);
 }
 
@@ -109,7 +110,7 @@ void Cli::run(){
     inputThread.join();
 }
 
-void Cli::consolePrint(char* msg){
+void Cli::consolePrint(std::string msg){
     consoleHideBuf();
     std::cout << msg << "\n";
     consolePrintBuf();

@@ -5,6 +5,7 @@
 #include "GameManager.h"
 #include "NetworkManager.h"
 #include "Cli.h"
+#include <string>
 
 class Peer : public IMediator {
 private:
@@ -15,7 +16,7 @@ private:
 public:
     Peer();
     ~Peer();
-    void notify(char* event);
+    void notify(std::string event);
     void run();
 };
 #endif
