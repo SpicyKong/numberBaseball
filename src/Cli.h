@@ -24,5 +24,6 @@ public:
     void changed();
     void run();
     void consolePrint(std::string msg);
+    std::string getLine();
 };
 #endif

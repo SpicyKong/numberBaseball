@@ -14,11 +14,13 @@ GameManager::~GameManager()
     gameList.clear();
 }
 
-bool GameManager::createGame(int opponentId)
+bool GameManager::createGame(int opponentId, int myTurn)
 {
     if (gameList.find(opponentId) != gameList.end())
+    {
         return 0;
-    Game* newGame = new Game(opponentId, digit);
+    }
+    Game* newGame = new Game(opponentId, digit, myTurn);
     gameList[opponentId] = newGame;
     return 1;
 }
@@ -37,11 +39,17 @@ void GameManager::deleteGame(int opponentId)
         delete gameList[opponentId];
 }
 
-bool GameManager::getState(int opponentId)
+int GameManager::getState(int opponentId)
 {
     if (gameList.find(opponentId) != gameList.end())
         return gameList[opponentId]->getState();
-    return 0;
+    return -1;
+}
+
+void GameManager::setState(int opponentId, int d)
+{
+    if (gameList.find(opponentId) != gameList.end())
+        gameList[opponentId]->setState(d);
 }
 
 /*
@@ -61,4 +69,26 @@ int GameManager::submitGuess(int opponentId, int guess)
         return 30;
     }
     return count_s*10 + count_b;
+}
+
+bool GameManager::isMyTurn(int opponentId)
+{
+    if (gameList.find(opponentId) == gameList.end())
+    {
+        return 0;
+    }
+    return (gameList[opponentId]->getTurn())%2;
+}
+
+bool GameManager::countTrun(int opponentId)
+{
+    m.lock();
+    if (gameList.find(opponentId) == gameList.end())
+    {
+        m.unlock();
+        return 0;
+    }
+    gameList[opponentId]->countTurn();
+    m.unlock();
+    return 1;
 }

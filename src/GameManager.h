@@ -2,19 +2,24 @@
 #define _GAMEMANAGER_H
 #include <map>
 #include "Game.h"
+#include <mutex>
 
 class GameManager {
 private:
     std::map<int, Game*> gameList;
     int digit;
 public:
+    static std::mutex m;
     GameManager();
     ~GameManager();
-    bool createGame(int opponentId);
+    bool createGame(int opponentId, int myTurn);
     bool setAnswer(int opponentId, int answer);
+    bool isMyTurn(int opponentId);
     void deleteGame(int opponentId);
-    bool getState(int opponentId);
+    int getState(int opponentId);
+    void setState(int opponentId, int d);
     int submitGuess(int opponentId, int guess);
+    bool countTrun(int opponentId);
 
 };
 

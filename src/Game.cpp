@@ -1,10 +1,12 @@
 #include "Game.h"
 
-Game::Game(int opponentId, int digit)
+Game::Game(int opponentId, int digit, int turn)
 {
-    opponentId = opponentId;
-    answer = -1;
-    digit = digit;
+    this->turn = turn;
+    this->opponentId = opponentId;
+    this->answer = -1;
+    this->digit = digit;
+    state=0;
 }
 
 void Game::setAnswer(int ans)
@@ -28,26 +30,47 @@ int Game::getStrike(int guess)
 
 int Game::getBall(int guess)
 {
-    int count = 0, tmp_guess=guess, tmp_answer=answer;
+    int count = 0, tmp_guess=guess, tmp_answer=answer, chk=0;
     for (int i=0; i<digit; i++) 
     {
-        tmp_guess = tmp_guess;
+        tmp_guess = guess;
+        chk=0;
         for (int j=0; j<digit; j++) 
         {
-            if (i==j)
-                continue;
             if (tmp_answer%10 == tmp_guess%10)
-                ++count;
+            {
+                if (i==j)
+                {
+                    chk=0;
+                    break;
+                }
+                else
+                    chk=1;
+            }
             tmp_guess /= 10;
         }
+        count += chk;
         tmp_answer /= 10;
     }
     return count;
 }
 
-bool Game::getState()
+int Game::getState()
 {
-    if (answer < 0)
-        return 0;
-    return 1; 
+    return state;
+}
+
+void Game::setState(int d)
+{
+    state += d;
+}
+
+int Game::getTurn()
+{
+    return turn;
+}
+
+void Game::countTurn()
+{
+    ++turn;
 }

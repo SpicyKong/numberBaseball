@@ -2,13 +2,16 @@
 #define _GAME_H
 class Game {
 private:
-    int opponentId, answer, digit;
+    int opponentId, answer, digit, turn, state;
 public:
-    Game(int opponentId, int digit);
+    Game(int opponentId, int digit, int turn);
     void setAnswer(int ans);
     int getStrike(int guess);
     int getBall(int guess);
-    bool getState();
+    int getState();
+    void setState(int d);
+    int getTurn();
+    void countTurn();
 };
 #endif
 /*

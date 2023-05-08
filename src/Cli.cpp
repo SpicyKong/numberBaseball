@@ -4,19 +4,23 @@
 #include <thread>
 #include <iostream>
 
-void Cli::clearBuf(){
+void Cli::clearBuf()
+{
     bufLeft.clear();
     bufRight.clear();
 }
 
-void Cli::consoleSyncCursor(){
+void Cli::consoleSyncCursor()
+{
     for (int i=0; i<bufRight.size(); i++)
         std::cout << (char)8;
 }
 
-void Cli::consoleInput(){
+void Cli::consoleInput()
+{
     char key;
-    while (state) {
+    while (state) 
+    {
         key = _getch();
         switch (key)
         {
@@ -24,8 +28,8 @@ void Cli::consoleInput(){
             state = 0;
             break;
         case 13: // Enter key
-            clearBuf();
             changed();
+            clearBuf();
             break;
         case 8: // back space
             if (bufLeft.size() == 0)
@@ -43,7 +47,7 @@ void Cli::consoleInput(){
             consolePrintBuf();
             break;
         case 72: // up key
-            mediator->notify("STOP");
+            mediator->notify("STOP", 0);
             state = 0;
             break;
         case 77: // right key
@@ -54,7 +58,7 @@ void Cli::consoleInput(){
             std::cout << bufLeft.back();
             break;
         case 80: // down key
-            mediator->notify("TEST");
+            mediator->notify("TEST", 0);
             break;
         case 83: //delete
             if (bufRight.size() == 0)
@@ -74,14 +78,16 @@ void Cli::consoleInput(){
     }
 }
 
-void Cli::consoleHideBuf(){
+void Cli::consoleHideBuf()
+{
     printf("\r");
     for (int i=0; i<bufLeft.size() + bufRight.size(); i++)
         std::cout << " ";
     std::cout << "\r";
 }
 
-void Cli::consolePrintBuf(){
+void Cli::consolePrintBuf()
+{
     for (auto it = bufLeft.begin(); it != bufLeft.end(); it++)
         std::cout << *it;
     for (auto it = bufRight.begin(); it != bufRight.end(); it++)
@@ -89,38 +95,61 @@ void Cli::consolePrintBuf(){
     consoleSyncCursor();
 }
 
-void Cli::setState(bool s) {
+void Cli::setState(bool s) 
+{
     state = s;
 }
 
-void Cli::setMediator(IMediator* mediator){
+void Cli::setMediator(IMediator* mediator)
+{
     this->mediator = mediator;
 }
 
-void Cli::changed(){
+void Cli::changed()
+{
     if (mediator == nullptr)
         return;
-    std::string eventName = "KEY_PRESS";
-    mediator->notify(eventName);
+    //std::string eventName = "KEY_PRESS";
+    mediator->notify("KEY_PRESS", 0);
 }
 
-void Cli::run(){
+void Cli::run()
+{
     
     std::thread inputThread(consoleInput, this);
     inputThread.join();
 }
 
-void Cli::consolePrint(std::string msg){
+void Cli::consolePrint(std::string msg)
+{
     consoleHideBuf();
     std::cout << msg << "\n";
     consolePrintBuf();
 }
 
-Cli::Cli(){
+Cli::Cli()
+{
     state = 1;
 
 }
 
-Cli::~Cli(){
+Cli::~Cli()
+{
     state = 0;
+}
+
+std::string Cli::getLine()
+{
+    std::string ret="";
+    for (auto i=bufLeft.begin(); i!=bufLeft.end(); i++)
+    {
+        ret+=*i;
+    }
+
+    for (auto i=bufRight.begin(); i!=bufRight.end(); i++)
+    {
+        ret+=*i;
+    }
+    clearBuf();
+    return ret;
 }
